@@ -3,9 +3,9 @@
  * Usage: node scripts/setup/add-episode.js <videoId> <slug>
  */
 import { absolute, firostError, readJsonUrl, writeJson } from 'firost';
-import { _ } from 'golgoth';
 import config from '../../lib/config.js';
 import { getInputDir } from '../../lib/paths.js';
+import { formatDuration } from '../../lib/youtube.js';
 
 const videoId = process.argv[2];
 const slug = process.argv[3];
@@ -39,10 +39,7 @@ const name = video.snippet.title;
 
 // Parse ISO 8601 duration (PT1M48S) to M:SS format
 const isoDuration = video.contentDetails.duration;
-const match = isoDuration.match(/PT(?:(\d+)M)?(?:(\d+)S)?/);
-const minutes = parseInt(match[1] || 0);
-const seconds = parseInt(match[2] || 0);
-const duration = `${minutes}:${_.padStart(seconds, 2, '0')}`;
+const duration = formatDuration(isoDuration);
 
 // Create episode directory
 const episodeDir = absolute(getInputDir(), slug);
